@@ -3,73 +3,76 @@ import { useState } from 'react'
 
 function App() {
 
-  const [city, setCity] = useState("")
-  const [weather, setWeather] = useState(null)
+  const [userChoice, setUserChoice] = useState("")
+  const [computerChoice, setComputerChoice] = useState("")
+  const [result, setResult] = useState("")
 
-  const getWeather = async () => {
+  const choices = ["Rock", "Paper", "Scissors"]
 
-    if(city === ""){
-      alert("Please enter city name")
-      return
+  const playGame = (choice) => {
+
+    const computer =
+      choices[Math.floor(Math.random() * 3)]
+
+    setUserChoice(choice)
+    setComputerChoice(computer)
+
+    if(choice === computer){
+      setResult("🤝 Draw")
     }
 
-    const apiKey = "dbeffeef00f4d636f1c50ffa17892d37"
+    else if(
+      (choice === "Rock" && computer === "Scissors") ||
+      (choice === "Paper" && computer === "Rock") ||
+      (choice === "Scissors" && computer === "Paper")
+    ){
+      setResult("🎉 You Win")
+    }
 
-    const url =
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+    else{
+      setResult("😢 Computer Wins")
+    }
 
-    const response = await fetch(url)
-    const data = await response.json()
-
-    setWeather(data)
   }
 
   return (
+
     <div className="container">
 
-      <div className="weather-card">
+      <div className="game-card">
 
-        <h1>🌦 Weather App</h1>
+        <h1>🎮 Rock Paper Scissors</h1>
 
-        <div className="search-box">
+        <div className="buttons">
 
-          <input
-            type="text"
-            placeholder="Enter city name"
-            onChange={(e)=>setCity(e.target.value)}
-          />
+          <button onClick={()=>playGame("Rock")}>
+            🪨 Rock
+          </button>
 
-          <button onClick={getWeather}>
-            Search
+          <button onClick={()=>playGame("Paper")}>
+            📄 Paper
+          </button>
+
+          <button onClick={()=>playGame("Scissors")}>
+            ✂️ Scissors
           </button>
 
         </div>
 
-        {
-          weather && weather.main && (
+        <div className="result-box">
 
-            <div className="weather-info">
+          <h2>You: {userChoice}</h2>
 
-              <h2>{weather.name}</h2>
+          <h2>Computer: {computerChoice}</h2>
 
-              <h3>{weather.main.temp}°C</h3>
+          <h1>{result}</h1>
 
-              <p>🌡 Humidity : {weather.main.humidity}%</p>
-
-              <p>💨 Wind Speed : {weather.wind.speed} km/h</p>
-
-              <p>
-                ☁ Condition : {weather.weather[0].main}
-              </p>
-
-            </div>
-
-          )
-        }
+        </div>
 
       </div>
 
     </div>
+
   )
 }
 
